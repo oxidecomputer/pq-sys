@@ -1,0 +1,10 @@
+This is a fork of the pq-sys crate: https://crates.io/pq-sys.
+The canonical repo is at https://github.com/sgrif/pq-sys.
+This fork is used in Omicron (https://github.com/oxide/omicron).
+
+This fork exists to fix https://github.com/sgrif/pq-sys/issues/36.  As of this
+writing, the upstream "pq-sys" repo does not appear to be actively maintained.
+There are several pull requests open for over a year from folks trying to use
+it.  Some of these have no feedback from the maintainer.  If our PR for
+https://github.com/sgrif/pq-sys/issues/36 is accepted upstream and released to
+crates.io, we should delete this fork and update Omicron.
