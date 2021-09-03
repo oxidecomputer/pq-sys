@@ -6,6 +6,7 @@ extern crate vcpkg;
 
 use std::process::Command;
 use std::env;
+use std::path::Path;
 use std::path::PathBuf;
 use std::fmt::{self, Display};
 
@@ -83,29 +84,37 @@ fn main() {
 
     if let Ok(lib_dir) = env::var("PQ_LIB_DIR") {
         println!("cargo:rustc-link-search=native={}", lib_dir);
-    } else if configured_by_pkg_config() {
+        emit_metadata(std::slice::from_ref(&Path::new(&lib_dir)));
+    } else if configure_using_pkg_config() {
         return // pkg_config does everything for us, including output for cargo
-    } else if configured_by_vcpkg() {
+    } else if configure_using_vcpkg() {
         return // vcpkg does everything for us, including output for cargo
     } else if let Some(path) = pg_config_output("--libdir") {
         let path = replace_homebrew_path_on_mac(path);
         println!("cargo:rustc-link-search=native={}", path);
+        emit_metadata(std::slice::from_ref(&Path::new(&path)));
     }
     println!("cargo:rustc-link-lib={}", LinkingOptions::from_env());
 }
 
 #[cfg(feature = "pkg-config")]
-fn configured_by_pkg_config() -> bool {
-    pkg_config::probe_library("libpq").is_ok()
+fn configure_using_pkg_config() -> bool {
+    let pkg = pkg_config::probe_library("libpq");
+    if let Ok(pkg) = pkg {
+        emit_metadata(&pkg.link_paths.map(|pathbuf| &pathbuf));
+        true
+    } else {
+        false
+    }
 }
 
 #[cfg(not(feature = "pkg-config"))]
-fn configured_by_pkg_config() -> bool {
+fn configure_using_pkg_config() -> bool {
     false
 }
 
 #[cfg(target_env = "msvc")]
-fn configured_by_vcpkg() -> bool {
+fn configure_using_vcpkg() -> bool {
     vcpkg::probe_package("libpq").map(|_| {
 
         // found libpq which depends on openssl
@@ -123,8 +132,12 @@ fn configured_by_vcpkg() -> bool {
 }
 
 #[cfg(not(target_env = "msvc"))]
-fn configured_by_vcpkg() -> bool {
+fn configure_using_vcpkg() -> bool {
     false
+}
+
+fn emit_metadata(link_paths: &[&Path]) {
+    println!("cargo:libdirs={}", link_paths.iter().map(|p| p.to_string_lossy()).collect::<Vec<_>>().join(":"));
 }
 
 fn pg_config_path() -> PathBuf {
