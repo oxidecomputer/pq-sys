@@ -1,8 +1,8 @@
 # Oxide fork of pq-sys
 
-This is a fork of the [pq-sys crate](https://crates.io/pq-sys).  The canonical
-repo is [on GitHub](https://github.com/sgrif/pq-sys).  This fork is used in
-[Omicron](https://github.com/oxidecomputer/omicron).
+This is a fork of the [pq-sys crate](https://crates.io/crates/pq-sys).  The
+canonical repo is [on GitHub](https://github.com/sgrif/pq-sys).  This fork is
+used in [Omicron](https://github.com/oxidecomputer/omicron).
 
 This fork exists to fix sgrif/pq-sys#36.  We have an [open
 PR](https://github.com/sgrif/pq-sys/pull/37) that fixes this.  If that PR is
