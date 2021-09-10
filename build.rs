@@ -108,8 +108,8 @@ fn main() {
     println!("cargo:rustc-link-lib={}", link_opts);
 
     if major_version >= 12 && link_opts.linking_type == Some(LinkType::Static) {
-        println!("cargo:rustc-link-lib=static=pgcommon");
-        println!("cargo:rustc-link-lib=static=pgport");
+        println!("cargo:rustc-link-lib=static-nobundle=pgcommon");
+        println!("cargo:rustc-link-lib=static-nobundle=pgport");
     }
 }
 
