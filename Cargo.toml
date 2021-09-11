@@ -13,6 +13,7 @@ openssl-sys = { version = ">= 0.9.0, < 0.11", optional = true }
 
 [features]
 openssl-static = ["openssl-sys"]
+default = [ "openssl-static" ]
 
 [lib]
 name = "pq_sys"
